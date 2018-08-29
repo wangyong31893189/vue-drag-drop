@@ -18,8 +18,10 @@
 			<drop class="drop list" @drop="handleDrop2(lists, ...arguments)" @dragleave="handleLeave2(lists, ...arguments)" @dragover="handleOver2(lists, ...arguments)">
 				<drag v-for="(item, index) in lists[1]"
 					class="drag"
-					:key="item.name"
+					:key="item.name"					
 					@dragstart="handleChildDragstart2"
+					@dragend="handleEnd2"
+					@click.native="clickEvent"
 					:class="{ [item.name]: true ,'new':item.isNew}"
 					:data-index="index"
 					:transfer-data="{ item: item,index:index, list: lists[1], example: 'lists',tag:'list2' }">
@@ -43,6 +45,7 @@ let variablePool={};
 		components: { Drag, Drop },
 		data() {
 			return {
+				isDrag:false,
 				currentComponent1:null,
 				currentComponent2:null,
 				currentComponent2Index:null,
@@ -57,6 +60,9 @@ let variablePool={};
 				console.log("handleChildDragstart1",data);
 				this.currentComponent1=data.item;
 				event.stopPropagation();
+			},
+			clickEvent(){
+				alert("click")
 			},
 			handleDrop1(toList, data) {
 				if(!toList){
@@ -78,7 +84,11 @@ let variablePool={};
 			handleChildDragstart2(data, event) {
 				console.log("handleChildDragstart2",data);
 				// this.currentComponent2=data.item;
+				this.isDrag=true;
 				event.stopPropagation();
+			},
+			handleEnd2(){
+				this.isDrag=false;
 			},
 			handleOver2(toList,data, event) {
 				clearTimeout(variablePool.leaveTimeoutId);
@@ -112,6 +122,7 @@ let variablePool={};
 			},
 			handleLeave2(toList,data, event) {
 				let that=this;
+				this.isDrag=false;
 				console.error("handleLeave2",toList,data,event.target.dataset.index);
 				event.stopPropagation();
 				if(!toList){
@@ -138,6 +149,7 @@ let variablePool={};
 				
 			},
 			handleDrop2(toList, data,event) {				
+				this.isDrag=false;
 				if(!toList){
 					return;
 				}
