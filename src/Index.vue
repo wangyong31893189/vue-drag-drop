@@ -1,12 +1,6 @@
 <template>
 	<div>
-
-    <div class="section">
-			<h3>Basic list support</h3>
-			<p>There are plenty of existing components that handle this much more robustly, mostly using sortable.js or dragula behind the scenes, but if you don't need all their bells and whistles this works in a basic way that's much more light-weight.</p>
-			<lists></lists>
-		</div>
-		<!-- <github-ribbon />
+		<github-ribbon />
 		<h1>Live demos for <a href="https://github.com/cameronhimself/vue-drag-drop/">VueDragDrop</a></h1>
 		<p>The source code for these demos is <a href="https://github.com/cameronhimself/vue-drag-drop-demo/tree/master/src">here</a>.</p>
 		<div class="section">
@@ -60,27 +54,26 @@
 			<h3>Scoped slots</h3>
 			<p>The drag transfer data is also provided via scope data in the default slot. It's arguably better to handle the transfer data using standard prop flow in your application, but using the scoped slot is quick and easy. It's also a simple way to check if a drag is in progress over a dropzone, which can be tricky to do: if the transfer-data is set on the Drop, you know a drag is in progress.</p>
 			<scoped></scoped>
-		</div> -->
+		</div>
 	</div>
 </template>
 
 <script>
-	// import GithubRibbon from './GithubRibbon.vue';
-	// import Minimal from './Minimal.vue';
-	// import Tags from './Tags.vue';
-	// import Styling from './Styling.vue';
-	// import Nested from './Nested.vue';
-	// import DragImage from './DragImage.vue';
-	// import DragHtml from './DragHtml.vue';
-	// import DropEffects from './DropEffects.vue';
-	// import Groups from './Groups.vue';
+	import GithubRibbon from './GithubRibbon.vue';
+	import Minimal from './Minimal.vue';
+	import Tags from './Tags.vue';
+	import Styling from './Styling.vue';
+	import Nested from './Nested.vue';
+	import DragImage from './DragImage.vue';
+	import DragHtml from './DragHtml.vue';
+	import DropEffects from './DropEffects.vue';
+	import Groups from './Groups.vue';
 	import Lists from './Lists.vue';
-	// import Files from './Files.vue';
-	// import Scoped from './Scoped.vue';
+	import Files from './Files.vue';
+	import Scoped from './Scoped.vue';
 
 	export default {
-		// components: { GithubRibbon, Minimal, Tags, Styling, Nested, DragImage, DragHtml, DropEffects, Groups, Lists, Files, Scoped },
-		components: { Lists},
+		components: { GithubRibbon, Minimal, Tags, Styling, Nested, DragImage, DragHtml, DropEffects, Groups, Lists, Files, Scoped },
 	};
 </script>
 
@@ -104,7 +97,7 @@
 		display: inline-block;
 		border-radius: 10px;
 		width: 100px;
-		/* height: 100px; */
+		height: 100px;
 		background: #ccc;
 		vertical-align: middle;
 		margin-right: 20px;
