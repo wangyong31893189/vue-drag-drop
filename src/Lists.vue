@@ -15,7 +15,7 @@
 		</div>
 
 		<div class="list-box">
-			<drop class="drop list" @drop="handleDrop2(lists, ...arguments)" @dragover="handleOver2(lists, ...arguments)">
+			<drop class="drop list" @drop="handleDrop2(lists, ...arguments)" @dragleave="handleLeave2(lists, ...arguments)" @dragover="handleOver2(lists, ...arguments)">
 				<drag v-for="(item, index) in lists[1]"
 					class="drag"
 					:key="item.name"
@@ -35,8 +35,10 @@
 </template>
 
 <script>
+
 	import { Drag, Drop } from 'vue-drag-drop';
 import Vue from 'vue';	
+let variablePool={};
 	export default {
 		components: { Drag, Drop },
 		data() {
@@ -79,6 +81,38 @@ import Vue from 'vue';
 				event.stopPropagation();
 			},
 			handleOver2(toList,data, event) {
+				clearTimeout(variablePool.leaveTimeoutId);
+				let that=this;
+				event.stopPropagation();
+				if(!toList){
+					return;
+				}
+				toList=that.lists[1];
+				//在本组内  交换位置
+				if(data.tag=='list2'){
+					return;
+				}
+				console.log("handleOver2",toList,data,event.target.dataset.index);
+				let dataset=event.target.dataset;
+				if(dataset.index!=null&&dataset.index!=undefined){//存在就设置
+					that.currentComponent2Index=dataset.index;
+				}
+				if(that.currentComponent2Index!=null){
+					if(!that.currentComponent2){
+						let item={name:data.item.name,isNew:true};
+						that.currentComponent2=item;
+						toList.splice(that.currentComponent2Index,0,item);
+					}else{
+						toList.splice(toList.indexOf(that.currentComponent2),1);
+						// delete that.currentComponent2.isNew;
+						toList.splice(that.currentComponent2Index,0,that.currentComponent2);
+					}
+				}
+				// that.currentComponent2=data.item;
+			},
+			handleLeave2(toList,data, event) {
+				let that=this;
+				console.error("handleLeave2",toList,data,event.target.dataset.index);
 				event.stopPropagation();
 				if(!toList){
 					return;
@@ -88,28 +122,22 @@ import Vue from 'vue';
 				if(data.tag=='list2'){
 					return;
 				}
-				console.log("handleOver2",toList,data,event.target.dataset.index);
-				let dataset=event.target.dataset;
-				if(dataset.index!=null&&dataset.index!=undefined){//存在就设置
-					this.currentComponent2Index=dataset.index;
-				}
-				if(this.currentComponent2Index!=null){
-					if(!this.currentComponent2){
-						let item={name:Math.random(),isNew:true};
-						this.currentComponent2=item;
-						toList.splice(this.currentComponent2Index,0,item);
-					}else{
-						toList.splice(toList.indexOf(this.currentComponent2),1);
-						toList.splice(this.currentComponent2Index,0,this.currentComponent2);
+				variablePool.leaveTimeoutId=setTimeout(function(){
+					let dataset=event.target.dataset;
+					if(that.currentComponent2Index!=null){
+						if(that.currentComponent2){	
+							toList.splice(toList.indexOf(that.currentComponent2),1);
+						}
 					}
-				}
+					that.currentComponent2Index=null;
+					that.currentComponent2=null
+				},100);				
 				// this.currentComponent2=data.item;
 			},
 			dargOver2(){
 				
 			},
-			handleDrop2(toList, data,event) {
-				this.currentComponent2=null;
+			handleDrop2(toList, data,event) {				
 				if(!toList){
 					return;
 				}
@@ -129,11 +157,15 @@ import Vue from 'vue';
 						// Vue.set
 						Vue.set(this.lists, 1, toList)
 					}else{// 不在本组内  新增在所在位置
-						toList.splice(dataset.index,0,data.item);
-						// toList.push(data.item);
+						// toList.splice(dataset.index,0,data.item);
+						// toList.push(data.item);	
+						for(let i in toList){
+							delete toList[i].isNew;
+						}		
+						Vue.set(this.lists, 1, toList)			
 					}
 
-					
+					this.currentComponent2=null;
 
 					// fromList.splice(fromList.indexOf(data.item), 1);
 					// toList.sort((a, b) => a > b);
@@ -165,6 +197,9 @@ import Vue from 'vue';
 		 */
 		 display: block;
 		 width: 200px;
+	}
+	.drag *{
+		pointer-events: none;
 	}
 	.drag.A { background: #aaa; }
 	.drag.B { background: #888; }
